@@ -15,11 +15,12 @@ const sketch = () => {
       for (let y = 0; y < count; y++) {
         const u = x / (count - 1);
         const v = y / (count - 1);
-        const radius = Math.abs(random.noise2D(u, v) * 0.025);
+        const radius = Math.abs(random.noise2D(u, v) * 0.09);
         points.push({
           color: random.pick(palette),
           position: [u, v],
           radius: radius,
+          rotation: random.noise2D(u, v),
           // radius: Math.abs(0.01 + random.gaussian() * 0.01),
         });
       }
@@ -36,7 +37,7 @@ const sketch = () => {
     context.fillStyle = colorForFill;
     context.fillRect(0, 0, width, height);
     points.forEach((data) => {
-      const { position, radius, color } = data;
+      const { position, radius, color, rotation } = data;
       const [u, v] = position;
       const x = lerp(margin, width - margin, u);
       const y = lerp(margin, height - margin, v);
@@ -46,9 +47,13 @@ const sketch = () => {
       // context.fillStyle = color;
       // context.lineWidth = 5;
       // context.fill();
+      context.save();
       context.fillStyle = color;
-      context.font = "100px Helvetica";
-      context.fillText("ᚠ", x, y);
+      context.font = `${radius * width}px "Helvetica`;
+      context.translate(x, y);
+      context.rotate(rotation);
+      context.fillText("[]", 0, 0);
+      context.restore();
     });
   };
 };
